@@ -56,10 +56,14 @@ class ImportApplication
 
             $import = $this->importFactory->create($path, $adapter);
 
-            $import->importAttributes();
-            $import->importCategories();
-            $import->importProducts();
-            $import->importCustomers();
+            if($cli->arguments->get('attributes_only')) {
+                $import->importAttributesOnly();
+            } else {
+                $import->importAttributes();
+                $import->importCategories();
+                $import->importProducts();
+                $import->importCustomers();
+            }
         } catch (InvalidArgumentException $e) {
             $cli->error($e->getMessage());
             $cli->usage();
@@ -98,6 +102,13 @@ class ImportApplication
         $cli->arguments->add('target_path', [
             'description' => 'Import Data Directory',
             'required' => true
+        ]);
+
+        $cli->arguments->add('attributes_only', [
+            'prefix' => 'a',
+            'longPrefix' => 'attributes-only',
+            'description' => 'Only export Attribute data',
+            'defaultValue' => 0
         ]);
     }
 }
