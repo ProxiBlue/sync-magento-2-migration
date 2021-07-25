@@ -7,7 +7,7 @@
 use EcomDev\MagentoMigration\ExportApplication;
 use League\CLImate\CLImate;
 
-require __DIR__ . '/../vendor/autoload.php';
+require __DIR__ . '/../../../autoload.php';
 
 use EcomDev\MagentoMigration\ImportApplication;
 
