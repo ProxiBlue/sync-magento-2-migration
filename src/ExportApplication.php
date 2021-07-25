@@ -56,10 +56,14 @@ class ExportApplication
 
             $export = $this->exportFactory->create($path, $adapter);
 
-            $export->exportAttributes();
-            $export->exportCategories();
-            $export->exportProducts();
-            $export->exportCustomers();
+            if($cli->arguments->get('attributes_only')) {
+                $export->exportAttributes();
+            } else {
+                $export->exportAttributes();
+                $export->exportCategories();
+                $export->exportProducts();
+                $export->exportCustomers();
+            }
         } catch (InvalidArgumentException $e) {
             $cli->error($e->getMessage());
             $cli->usage();
@@ -105,6 +109,13 @@ class ExportApplication
         $cli->arguments->add('target_path', [
             'description' => 'MagentoExport Directory',
             'required' => true
+        ]);
+
+        $cli->arguments->add('attributes_only', [
+            'prefix' => 'a',
+            'longPrefix' => 'attributes-only',
+            'description' => 'Only export Attribute data',
+            'defaultValue' => 0
         ]);
     }
 }
