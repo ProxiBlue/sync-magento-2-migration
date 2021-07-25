@@ -47,6 +47,13 @@ class Import
         $this->customerImport = $customerImport;
     }
 
+    public function importAttributesOnly()
+    {
+        $this->eavMetadataImport->importAttributes($this->csvFactory->createReader('attribute.csv'));
+
+        $this->eavMetadataImport->importAttributeOptions($this->csvFactory->createReader('attribute_option.csv'));
+    }
+
     public function importAttributes()
     {
         $this->eavMetadataImport->importAttributes($this->csvFactory->createReader('attribute.csv'));
