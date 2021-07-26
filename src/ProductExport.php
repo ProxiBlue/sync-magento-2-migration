@@ -49,6 +49,7 @@ class ProductExport
         $writer = $this->csvFactory->createWriter($fileName, ['sku', 'attribute', 'store', 'value']);
 
         foreach ($this->productInfo->fetchProductAttributes($this->conditionGenerator) as $row) {
+            $row = array_map('base64_encode', $row);
             $writer->write($row);
         }
     }

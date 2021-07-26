@@ -141,6 +141,7 @@ class ProductImport
 
 
             foreach ($productData as $row) {
+                $row = array_map('base64_decode', $row);
                 $type = $attributes[$row['attribute']]['type'] ?? '';
 
                 if (!isset($typeInserts[$type])) {

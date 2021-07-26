@@ -58,6 +58,8 @@ class ImportApplication
 
             if($cli->arguments->get('attributes_only')) {
                 $import->importAttributesOnly();
+            } elseif($cli->arguments->get('products_data_only')) {
+                $import->importProductsDataOnly();
             } else {
                 $import->importAttributes();
                 $import->importCategories();
@@ -108,6 +110,12 @@ class ImportApplication
             'prefix' => 'a',
             'longPrefix' => 'attributes-only',
             'description' => 'Only export Attribute data',
+            'defaultValue' => 0
+        ]);
+
+        $cli->arguments->add('products_data_only', [
+            'prefix' => 'po',
+            'longPrefix' => 'products-data-only',
             'defaultValue' => 0
         ]);
     }

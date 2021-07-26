@@ -58,6 +58,8 @@ class ExportApplication
 
             if($cli->arguments->get('attributes_only')) {
                 $export->exportAttributes();
+            } else if($cli->arguments->get('products_data_only')) {
+                $export->exportProductsDataOnly();
             } else {
                 $export->exportAttributes();
                 $export->exportCategories();
@@ -115,6 +117,13 @@ class ExportApplication
             'prefix' => 'a',
             'longPrefix' => 'attributes-only',
             'description' => 'Only export Attribute data',
+            'defaultValue' => 0
+        ]);
+
+        $cli->arguments->add('products_data_only', [
+            'prefix' => 'po',
+            'longPrefix' => 'products-data-only',
+            'description' => 'Only export product data',
             'defaultValue' => 0
         ]);
     }

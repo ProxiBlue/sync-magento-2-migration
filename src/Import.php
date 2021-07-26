@@ -69,6 +69,12 @@ class Import
         $this->categoryImport->importCategoryAttributes($this->csvFactory->createReader('category_data.csv'));
     }
 
+    public function importProductsDataOnly()
+    {
+        $this->productImport->importProducts($this->csvFactory->createReader('product.csv'));
+        $this->productImport->importProductData($this->csvFactory->createReader('product_data.csv'));
+    }
+
     public function importProducts()
     {
         $this->productImport->importProducts($this->csvFactory->createReader('product.csv'));
