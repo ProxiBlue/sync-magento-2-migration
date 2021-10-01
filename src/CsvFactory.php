@@ -11,6 +11,7 @@ namespace EcomDev\MagentoMigration;
 use League\Csv\Reader;
 use League\Csv\RFC4180Field;
 use League\Csv\Writer;
+use phpDocumentor\Reflection\Types\Boolean;
 use Symfony\Component\Finder\SplFileInfo;
 
 class CsvFactory
@@ -29,10 +30,17 @@ class CsvFactory
      */
     private $csvReader;
 
-    public function __construct(string $currentDirectory)
+    /**
+     * @var Boolean
+     */
+    private $encodedData;
+
+    public function __construct(string $currentDirectory, bool $encodedData = false)
     {
         $this->currentDirectory = $currentDirectory;
         $this->csvReader = new CsvReader();
+        $this->encodedData = $encodedData;
+
     }
 
     public function createNativeWriter(string $fileName): Writer
@@ -52,13 +60,14 @@ class CsvFactory
             $csvFile,
             $headers,
             $this->skipFilters[$fileName] ?? [],
-            $this->mappings[$fileName] ?? []
+            $this->mappings[$fileName] ?? [],
+            $this->encodedData
         );
     }
 
     public function createReader(string $fileName): iterable
     {
-        return $this->csvReader->readFile($this->currentDirectory . DIRECTORY_SEPARATOR . $fileName);
+        return $this->csvReader->readFile($this->currentDirectory . DIRECTORY_SEPARATOR . $fileName, $this->encodedData);
     }
 
     public function withSkip(string $fileName, array $condition): self

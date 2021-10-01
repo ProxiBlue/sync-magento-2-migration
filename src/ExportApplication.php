@@ -54,7 +54,7 @@ class ExportApplication
                 $this->exportFactory = $this->exportFactory->withConfiguration((array)$configuration);
             }
 
-            $export = $this->exportFactory->create($path, $adapter);
+            $export = $this->exportFactory->create($path, $adapter, (bool) $cli->arguments->get('encode_data'));
 
             if($cli->arguments->get('attributes_only')) {
                 $export->exportAttributes();
@@ -124,6 +124,13 @@ class ExportApplication
             'prefix' => 'po',
             'longPrefix' => 'products-data-only',
             'description' => 'Only export product data',
+            'defaultValue' => 0
+        ]);
+
+        $cli->arguments->add('encode_data', [
+            'prefix' => 'ed',
+            'longPrefix' => 'encode_data',
+            'description' => 'Bae 64 encode data to csv file',
             'defaultValue' => 0
         ]);
     }

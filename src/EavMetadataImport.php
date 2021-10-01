@@ -427,20 +427,28 @@ class EavMetadataImport
             $nextSortOrder = ($existingAttributeSets[$set]['group_sort'] ?? 0) + 10;
             $existingAttributeSets[$set]['group_sort'] = $nextSortOrder;
 
-            $existingAttributeSets[$set]['groups'][$group] = [
-                'id' => $this
-                    ->createAttributeGroup(
-                        $existingAttributeSets[$set]['id'],
-                        [
-                            'attribute_group_name' => $group,
-                            'default_id' => 0,
-                            'attribute_group_code' => strtolower(preg_replace('/\s+/', '-', $group)),
-                            'tab_group_code' => 'basic',
-                            'sort_order' => $nextSortOrder,
-                        ]
-                    ),
-                'attributes' => [],
-            ];
+            try {
+                $existingAttributeSets[$set]['groups'][$group] = [
+                    'id' => $this
+                        ->createAttributeGroup(
+                            $existingAttributeSets[$set]['id'],
+                            [
+                                'attribute_group_name' => $group,
+                                'default_id' => 0,
+                                'attribute_group_code' => strtolower(preg_replace('/\s+/', '-', $group)),
+                                'tab_group_code' => 'basic',
+                                'sort_order' => $nextSortOrder,
+                            ]
+                        ),
+                    'attributes' => [],
+                ];
+            } catch (\Throwable $exception) {
+                $pdoException = $exception->getPrevious();
+                if($pdoException->getCode() != "23000") {
+                    throw $exception;
+                }
+
+            }
         }
 
         $attributeStatement = InsertOnDuplicate::create(

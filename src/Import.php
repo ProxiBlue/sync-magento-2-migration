@@ -51,6 +51,8 @@ class Import
     {
         $this->eavMetadataImport->importAttributes($this->csvFactory->createReader('attribute.csv'));
 
+        $this->eavMetadataImport->importAttributeSets($this->csvFactory->createReader('attribute_set.csv'));
+
         $this->eavMetadataImport->importAttributeOptions($this->csvFactory->createReader('attribute_option.csv'));
     }
 

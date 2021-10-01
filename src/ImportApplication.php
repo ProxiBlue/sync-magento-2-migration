@@ -54,7 +54,7 @@ class ImportApplication
                 );
             }
 
-            $import = $this->importFactory->create($path, $adapter);
+            $import = $this->importFactory->create($path, $adapter, (bool) $cli->arguments->get('decode_data'));
 
             if($cli->arguments->get('attributes_only')) {
                 $import->importAttributesOnly();
@@ -116,6 +116,12 @@ class ImportApplication
         $cli->arguments->add('products_data_only', [
             'prefix' => 'po',
             'longPrefix' => 'products-data-only',
+            'defaultValue' => 0
+        ]);
+
+        $cli->arguments->add('decode_data', [
+            'prefix' => 'dd',
+            'longPrefix' => 'decode-data',
             'defaultValue' => 0
         ]);
     }

@@ -280,15 +280,9 @@ class InsertOnDuplicate extends InsertMultiple
             $adapter->getDriver()->createStatement('SET FOREIGN_KEY_CHECKS=0')->execute();
             try {
                 $this->limitStatement($limit, $adapter)->execute($parameters);
-                echo ".";
             } catch (\Exception $e) {
-                if(array_key_exists(3, $parameters)) {
                     $parameters[3] = (int)0;
                     $this->limitStatement($limit, $adapter)->execute($parameters);
-                    echo "-";
-                } else {
-                    $b = 1;
-                }
             }
             $adapter->getDriver()->createStatement('SET FOREIGN_KEY_CHECKS=1')->execute();
         }
