@@ -115,8 +115,7 @@ class Import
 
     public function importOrderLabels()
     {
-        $csvReader = $this->csvFactory->createReader('order_labels.csv');
-        $this->orderLabelImport->import($csvReader);
-        $this->orderLabelImport->importOrderLabelMaps($csvReader);
+        $this->orderLabelImport->import($this->csvFactory->createReader('order_labels.csv'));
+        $this->orderLabelImport->importOrderLabelMaps($this->csvFactory->createReader('order_labels.csv'));
     }
 }
