@@ -101,15 +101,19 @@ class OrderLabelImport
 
             foreach ($orderLabels as $label) {
                 $select = $this->sql->select('sales_order')
-                    ->columns(['entity_id'])
-                    ->where('increment_id = ' . $label['increment_id']);
+                    ->columns(['order_id' => 'entity_id'])
+                    ->where("increment_id = '" . $label['increment_id']."'");
                 foreach ($this->sql->prepareStatementForSqlObject($select)->execute() as $row) {
                     $mappedLabel = $this->knownLabelIds[$label['name']];
                     $orderMap[] = array_merge($row,['label_id' => $mappedLabel, 'is_manual' => 1]);
+                    echo ".";
                 }
             }
-            $test = $orderLabels;
-
+            foreach($orderMap as $label) {
+                $sql = $this->sql->insert('mageplaza_orderlabels_map_order')->columns(['order_id', 'label_id', 'is_manual'])->values($label);
+                $this->sql->prepareStatementForSqlObject($sql)->execute();
+                echo ".";
+            }
         });
     }
 
