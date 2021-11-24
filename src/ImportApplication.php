@@ -60,6 +60,8 @@ class ImportApplication
                 $import->importAttributesOnly();
             } elseif($cli->arguments->get('products_data_only')) {
                 $import->importProductsDataOnly();
+            } elseif($cli->arguments->get('order_labels')) {
+                $import->importOrderLabels();
             } else {
                 $import->importAttributes();
                 $import->importCategories();
@@ -122,6 +124,12 @@ class ImportApplication
         $cli->arguments->add('decode_data', [
             'prefix' => 'dd',
             'longPrefix' => 'decode-data',
+            'defaultValue' => 0
+        ]);
+
+        $cli->arguments->add('order_labels', [
+            'prefix' => 'ol',
+            'longPrefix' => 'order-labels',
             'defaultValue' => 0
         ]);
     }

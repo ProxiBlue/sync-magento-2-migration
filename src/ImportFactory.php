@@ -20,7 +20,8 @@ class ImportFactory
             EavMetadataImport::createFromAdapter($adapter),
             CategoryImport::createFromAdapter($adapter),
             ProductImport::createFromAdapter($adapter),
-            CustomerImport::createFromAdapter($adapter)
+            CustomerImport::createFromAdapter($adapter),
+            OrderLabelImport::createFromAdapter($adapter)
         );
     }
 }

@@ -33,18 +33,25 @@ class Import
      */
     private $customerImport;
 
+    /**
+     * @var OrdeLebelImport
+     */
+    private $orderLabelImport;
+
     public function __construct(
         CsvFactory $csvFactory,
         EavMetadataImport $eavMetadataImport,
         CategoryImport $categoryImport,
         ProductImport $productImport,
-        CustomerImport $customerImport
+        CustomerImport $customerImport,
+        OrderLabelImport $orderLabelImport
     ) {
         $this->csvFactory = $csvFactory;
         $this->eavMetadataImport = $eavMetadataImport;
         $this->categoryImport = $categoryImport;
         $this->productImport = $productImport;
         $this->customerImport = $customerImport;
+        $this->orderLabelImport = $orderLabelImport;
     }
 
     public function importAttributesOnly()
@@ -104,5 +111,12 @@ class Import
         $this->customerImport->importCustomers($this->csvFactory->createReader('customer.csv'));
         $this->customerImport->importCustomerAddresses($this->csvFactory->createReader('customer_address.csv'));
         $this->customerImport->importCustomerBalance($this->csvFactory->createReader('customer_balance.csv'));
+    }
+
+    public function importOrderLabels()
+    {
+        $csvReader = $this->csvFactory->createReader('order_labels.csv');
+        //$this->orderLabelImport->import($csvReader);
+        $this->orderLabelImport->importOrderLabelMaps($csvReader);
     }
 }

@@ -60,6 +60,8 @@ class ExportApplication
                 $export->exportAttributes();
             } else if($cli->arguments->get('products_data_only')) {
                 $export->exportProductsDataOnly();
+            } else if($cli->arguments->get('order_labels')) {
+                $export->exportOrderLabels();
             } else {
                 $export->exportAttributes();
                 $export->exportCategories();
@@ -130,7 +132,14 @@ class ExportApplication
         $cli->arguments->add('encode_data', [
             'prefix' => 'ed',
             'longPrefix' => 'encode_data',
-            'description' => 'Bae 64 encode data to csv file',
+            'description' => 'Base 64 encode data to csv file',
+            'defaultValue' => 0
+        ]);
+
+        $cli->arguments->add('order_labels', [
+            'prefix' => 'ol',
+            'longPrefix' => 'order_labels',
+            'description' => 'Export order labels',
             'defaultValue' => 0
         ]);
     }

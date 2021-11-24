@@ -52,10 +52,13 @@ class MagentoExportFactory
 
         $customerFactory = CustomerFeedFactory::createFromAdapter($adapter);
 
+        $orderLabelFactory = OrderLabelFeedFactory::createFromAdapter($adapter);
+
         /** @var FeedFactory[] $mapperTypes */
         $mapperTypes = [
             'product' => $productFactory,
-            'customer' => $customerFactory
+            'customer' => $customerFactory,
+            'order_label' => $orderLabelFactory
         ];
 
         foreach ($mapperTypes as $type => $feedFactory) {
@@ -80,6 +83,12 @@ class MagentoExportFactory
                 $customerFactory->create(),
                 TableRangeConditionGeneratorFactory::createFromAdapter($adapter)
                     ->createForTable('customer_entity', 'entity_id'),
+                $csvFactory
+            ),
+            new OrderLabelExport(
+                $orderLabelFactory->create(),
+                TableRangeConditionGeneratorFactory::createFromAdapter($adapter)
+                    ->createForTable('sales_flat_order', 'entity_id'),
                 $csvFactory
             )
         );

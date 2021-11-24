@@ -12,7 +12,7 @@ namespace EcomDev\MagentoMigration;
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\Sql\Sql;
 
-class CustomerFeedFactory implements FeedFactory
+class OrderLabelFeedFactory implements FeedFactory
 {
     /**
      * @var Sql
@@ -20,35 +20,28 @@ class CustomerFeedFactory implements FeedFactory
     private $sql;
 
     /**
-     * @var MagentoEavInfo
-     */
-    private $eavInfo;
-
-    /**
      * @var RowMapper[]
      */
     private $rowMappers = [];
 
-    public function __construct(Sql $sql, MagentoEavInfo $eavInfo)
+    public function __construct(Sql $sql)
     {
         $this->sql = $sql;
-        $this->eavInfo = $eavInfo;
     }
 
     public static function createFromAdapter(Adapter $adapter)
     {
         return new self(
-            new Sql($adapter),
-            MagentoEavInfo::createFromAdapter($adapter)
+            new Sql($adapter)
         );
     }
 
     /**
-     * @return CustomerFeed
+     * @return OrderLabelFeed
      */
     public function create(): Feed
     {
-        return new CustomerFeed($this->sql, $this->eavInfo, $this->rowMappers);
+        return new OrderLabelFeed($this->sql, $this->rowMappers);
     }
 
     /**

@@ -28,16 +28,25 @@ class MagentoExport
      */
     private $customerExport;
 
+    /**
+     * @var OrderLabelExport
+     */
+    private $orderLabelExport;
+
+
     public function __construct(
         EavMetadataExport $attributeExport,
         CategoryExport $categoryExport,
         ProductExport $productExport,
-        CustomerExport $customerExport
+        CustomerExport $customerExport,
+        OrderLabelExport $orderLabelExport
+
     ) {
         $this->eavMetadataExport = $attributeExport;
         $this->categoryExport = $categoryExport;
         $this->productExport = $productExport;
         $this->customerExport = $customerExport;
+        $this->orderLabelExport = $orderLabelExport;
     }
 
     public function exportAttributes()
@@ -79,5 +88,10 @@ class MagentoExport
         $this->customerExport->exportCustomerAddresses('customer_address.csv');
         // TODO: add a check for customer balance existence and enable it back
         // $this->customerExport->exportCustomerBalance('customer_balance.csv');
+    }
+
+    public function exportOrderLabels()
+    {
+        $this->orderLabelExport->export('order_labels.csv');
     }
 }

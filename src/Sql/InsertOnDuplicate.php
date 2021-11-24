@@ -287,4 +287,8 @@ class InsertOnDuplicate extends InsertMultiple
             $adapter->getDriver()->createStatement('SET FOREIGN_KEY_CHECKS=1')->execute();
         }
     }
+
+    public function getRows() {
+        return $this->rows;
+    }
 }
