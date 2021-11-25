@@ -21,7 +21,8 @@ class ImportFactory
             CategoryImport::createFromAdapter($adapter),
             ProductImport::createFromAdapter($adapter),
             CustomerImport::createFromAdapter($adapter),
-            OrderLabelImport::createFromAdapter($adapter)
+            OrderLabelImport::createFromAdapter($adapter),
+            OrderTaxImport::createFromAdapter($adapter)
         );
     }
 }

@@ -62,6 +62,8 @@ class ImportApplication
                 $import->importProductsDataOnly();
             } elseif($cli->arguments->get('order_labels')) {
                 $import->importOrderLabels();
+            } elseif($cli->arguments->get('order_tax')) {
+                $import->importOrderTax();
             } else {
                 $import->importAttributes();
                 $import->importCategories();
@@ -130,6 +132,12 @@ class ImportApplication
         $cli->arguments->add('order_labels', [
             'prefix' => 'ol',
             'longPrefix' => 'order-labels',
+            'defaultValue' => 0
+        ]);
+
+        $cli->arguments->add('order_tax', [
+            'prefix' => 'ot',
+            'longPrefix' => 'order-tax',
             'defaultValue' => 0
         ]);
     }

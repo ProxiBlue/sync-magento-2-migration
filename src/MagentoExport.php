@@ -33,13 +33,19 @@ class MagentoExport
      */
     private $orderLabelExport;
 
+    /**
+     * @var OrderTaxExport
+     */
+    private $orderTaxExport;
+
 
     public function __construct(
         EavMetadataExport $attributeExport,
         CategoryExport $categoryExport,
         ProductExport $productExport,
         CustomerExport $customerExport,
-        OrderLabelExport $orderLabelExport
+        OrderLabelExport $orderLabelExport,
+        OrdertaxExport $orderTaxExport
 
     ) {
         $this->eavMetadataExport = $attributeExport;
@@ -47,6 +53,7 @@ class MagentoExport
         $this->productExport = $productExport;
         $this->customerExport = $customerExport;
         $this->orderLabelExport = $orderLabelExport;
+        $this->orderTaxExport = $orderTaxExport;
     }
 
     public function exportAttributes()
@@ -93,5 +100,10 @@ class MagentoExport
     public function exportOrderLabels()
     {
         $this->orderLabelExport->export('order_labels.csv');
+    }
+
+    public function exportOrderTax()
+    {
+        $this->orderTaxExport->export('order_tax.csv');
     }
 }

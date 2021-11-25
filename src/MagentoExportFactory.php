@@ -54,6 +54,8 @@ class MagentoExportFactory
 
         $orderLabelFactory = OrderLabelFeedFactory::createFromAdapter($adapter);
 
+        $orderTaxFactory = OrderTaxFeedFactory::createFromAdapter($adapter);
+
         /** @var FeedFactory[] $mapperTypes */
         $mapperTypes = [
             'product' => $productFactory,
@@ -89,6 +91,12 @@ class MagentoExportFactory
                 $orderLabelFactory->create(),
                 TableRangeConditionGeneratorFactory::createFromAdapter($adapter)
                     ->createForTable('sales_flat_order', 'entity_id'),
+                $csvFactory
+            ),
+            new OrderTaxExport(
+                $orderTaxFactory->create(),
+                TableRangeConditionGeneratorFactory::createFromAdapter($adapter)
+                    ->createForTable('sales_flat_order_payment', 'entity_id'),
                 $csvFactory
             )
         );

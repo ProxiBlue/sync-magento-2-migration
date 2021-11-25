@@ -62,6 +62,8 @@ class ExportApplication
                 $export->exportProductsDataOnly();
             } else if($cli->arguments->get('order_labels')) {
                 $export->exportOrderLabels();
+            } else if($cli->arguments->get('order_tax')) {
+                $export->exportOrderTax();
             } else {
                 $export->exportAttributes();
                 $export->exportCategories();
@@ -140,6 +142,13 @@ class ExportApplication
             'prefix' => 'ol',
             'longPrefix' => 'order_labels',
             'description' => 'Export order labels',
+            'defaultValue' => 0
+        ]);
+
+        $cli->arguments->add('order_tax', [
+            'prefix' => 'ot',
+            'longPrefix' => 'order_tax',
+            'description' => 'Export order tax exemption data',
             'defaultValue' => 0
         ]);
     }
