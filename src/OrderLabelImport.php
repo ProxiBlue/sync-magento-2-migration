@@ -22,8 +22,6 @@ class OrderLabelImport
      */
     private $sql;
 
-    private $knownLabelIds;
-
     const ORDERS_FIELDS = [
         'increment_id', 'name', 'background_color'
     ];
@@ -66,15 +64,17 @@ class OrderLabelImport
             $defaultColumns = array_keys(self::ORDER_FIELDS_DEFAULTS);
             $columns = array_merge(['name', 'background_color'], $defaultColumns);
 
-            $insert = InsertOnDuplicate::create('mageplaza_orderlabels_label', $columns)
-                        ->onDuplicate(['name', 'background_color']);
+            $insert = InsertOnDuplicate::create('mageplaza_orderlabels_label', $columns);
 
-            $labelsProcessed = [];
+            // The destination table don't have unique indexes, so onDuplicate will not work
+            // use code to prevent duplciate inserts
+            $select = $this->sql->select('mageplaza_orderlabels_label')->columns(['name']);
+            $labelsExisting = array_unique(array_column(iterator_to_array($this->sql->prepareStatementForSqlObject($select)->execute(), false), 'name'));
             foreach ($orderLabels as $label) {
-                if(in_array($label['name'],$labelsProcessed)) {
+                if (in_array($label['name'], $labelsExisting)) {
                     continue;
                 }
-                $labelsProcessed[] = $label['name'];
+                $labelsExisting[] = $label['name'];
                 unset($label['increment_id']);
                 $addDefaults = array_merge($label, self::ORDER_FIELDS_DEFAULTS);
                 $insert->withAssocRow(
@@ -89,31 +89,33 @@ class OrderLabelImport
 
     public function importOrderLabelMaps(iterable $orderLabels): void
     {
-        $this->knownLabelIds = [];
-        $select = $this->sql->select('mageplaza_orderlabels_label')
-            ->columns(['rule_id', 'name']);
-        foreach ($this->sql->prepareStatementForSqlObject($select)->execute() as $labelRow) {
-            $this->knownLabelIds[$labelRow['name']] = $labelRow['rule_id'];
-        }
-
         $this->transactional(function () use ($orderLabels) {
-            $orderMap = [];
+            $knownLabelIds = [];
+            $select = $this->sql->select('mageplaza_orderlabels_label')
+                ->columns(['rule_id', 'name']);
+            foreach ($this->sql->prepareStatementForSqlObject($select)->execute() as $labelRow) {
+                $knownLabelIds[$labelRow['name']] = $labelRow['rule_id'];
+            }
+
+            $insert = InsertOnDuplicate::create('mageplaza_orderlabels_map_order', ['order_id', 'label_id', 'is_manual'])
+                ->onDuplicate(['order_id', 'label_id', 'is_manual']);
+
+            $select = $this->sql->select('sales_order')->columns(['increment_id', 'entity_id']);
+            $orderData = [];
+            foreach ($this->sql->prepareStatementForSqlObject($select)->execute() as $row) {
+                $orderData[$row['increment_id']] = $row['entity_id'];
+            }
 
             foreach ($orderLabels as $label) {
-                $select = $this->sql->select('sales_order')
-                    ->columns(['order_id' => 'entity_id'])
-                    ->where("increment_id = '" . $label['increment_id']."'");
-                foreach ($this->sql->prepareStatementForSqlObject($select)->execute() as $row) {
-                    $mappedLabel = $this->knownLabelIds[$label['name']];
-                    $orderMap[] = array_merge($row,['label_id' => $mappedLabel, 'is_manual' => 1]);
-                    echo ".";
+                $mappedLabel = $knownLabelIds[$label['name']];
+                if(isset($orderData[$label['increment_id']])) {
+                    $insert->withAssocRow(
+                        ['order_id' => $orderData[$label['increment_id']], 'label_id' => $mappedLabel, 'is_manual' => 1]
+                    );
+                    $insert = $insert->flushIfLimitReached($this->sql);
                 }
             }
-            foreach($orderMap as $label) {
-                $sql = $this->sql->insert('mageplaza_orderlabels_map_order')->columns(['order_id', 'label_id', 'is_manual'])->values($label);
-                $this->sql->prepareStatementForSqlObject($sql)->execute();
-                echo ".";
-            }
+            $insert->executeIfNotEmpty($this->sql);
         });
     }
 
